@@ -1,11 +1,16 @@
 {% extends "base.html" %}
+{# Hereda sidebar, topbar y estructura de base.html #}
 
 {% block title %}Operaciones — {{ app_name }}{% endblock %}
 {% block page_title %}Operaciones & ERP{% endblock %}
 
 {% block content %}
-<!-- KPI Strip -->
+
+<!-- ── KPI Strip ─────────────────────────────────────────────────────────── -->
+<!-- Cuatro indicadores clave del módulo de operaciones, llenados por operaciones.js -->
 <div class="kpi-strip">
+
+  <!-- Licencias de software vendidas y activas actualmente -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-blue">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -15,6 +20,8 @@
       <div class="kpi-value" id="kLicencias">—</div>
     </div>
   </div>
+
+  <!-- Ingresos totales del año fiscal actual -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-green">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -24,6 +31,8 @@
       <div class="kpi-value" id="kIngresos">—</div>
     </div>
   </div>
+
+  <!-- Porcentaje de clientes que renuevan su licencia al vencimiento -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-purple">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
@@ -33,6 +42,8 @@
       <div class="kpi-value" id="kRenovacion">—</div>
     </div>
   </div>
+
+  <!-- Total de empresas clientes con algún producto activo -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-orange">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -44,7 +55,10 @@
   </div>
 </div>
 
-<!-- ERP Products Grid -->
+
+<!-- ── Portafolio ERP ─────────────────────────────────────────────────────── -->
+<!-- Grid de tarjetas por producto, con mini-barra de tasa de renovación -->
+<!-- Las tarjetas las genera operaciones.js (loadProductosERP) -->
 <section class="section-block">
   <h3 class="section-title">Portafolio ERP</h3>
   <div class="products-erp-grid" id="erpProductsGrid">
@@ -52,8 +66,11 @@
   </div>
 </section>
 
-<!-- Chart Ingresos + Indicators -->
+
+<!-- ── Gráfica + Indicadores de plataforma ───────────────────────────────── -->
 <div class="charts-grid">
+
+  <!-- Gráfica de barras apiladas: ingresos mensuales separados por producto -->
   <section class="section-block">
     <h3 class="section-title">Ingresos Mensuales por Producto (MXN Miles)</h3>
     <div class="chart-container">
@@ -61,42 +78,53 @@
     </div>
   </section>
 
+  <!-- Indicadores de salud de la plataforma con barras de progreso -->
   <section class="section-block">
     <h3 class="section-title">Indicadores de Plataforma</h3>
     <div class="indicators-grid">
+
+      <!-- Uptime: porcentaje de tiempo que el sistema estuvo disponible -->
       <div class="indicator-card">
         <div class="ind-header">
           <span class="ind-label">Uptime</span>
           <span class="ind-value" id="indUptime">—</span>
         </div>
+        <!-- La barra se anima con JS: style="width: 99.7%" -->
         <div class="progress-bar">
-          <div class="progress-fill fill-green" id="uptimeBar" style="width:0%"></div>
+          <div class="progress-fill fill-green" id="uptimeBar"></div>
         </div>
       </div>
+
+      <!-- NPS: Net Promoter Score, qué tan probable es que recomienden el producto -->
       <div class="indicator-card">
         <div class="ind-header">
           <span class="ind-label">NPS Score</span>
           <span class="ind-value" id="indNPS">—</span>
         </div>
         <div class="progress-bar">
-          <div class="progress-fill fill-blue" id="npsBar" style="width:0%"></div>
+          <div class="progress-fill fill-blue" id="npsBar"></div>
         </div>
       </div>
+
+      <!-- Tickets abiertos: cuántos casos de soporte están sin resolver -->
       <div class="indicator-card">
         <div class="ind-header">
           <span class="ind-label">Tickets Abiertos</span>
           <span class="ind-value" id="indTickets">—</span>
         </div>
         <div class="progress-bar">
-          <div class="progress-fill fill-orange" id="ticketsBar" style="width:0%"></div>
+          <div class="progress-fill fill-orange" id="ticketsBar"></div>
         </div>
       </div>
     </div>
   </section>
 </div>
+
 {% endblock %}
 
 {% block extra_js %}
+<!-- Chart.js: librería para las gráficas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<!-- operaciones.js: toda la lógica dinámica de esta página -->
 <script src="{{ url_for('static', filename='js/operaciones.js') }}"></script>
 {% endblock %}

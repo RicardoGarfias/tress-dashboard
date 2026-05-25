@@ -1,10 +1,14 @@
-/* ── index.js — Página de Inicio ─────────────────────────── */
+/* index.js — Lógica de la página de Inicio
+   Carga datos de la API y los muestra en las tarjetas y la cuadrícula de productos */
 
+
+// Carga los KPIs del hero y el strip superior
 async function loadHeroCards() {
   try {
+    // Hace DOS peticiones al mismo tiempo para ser más rápido (Promise.all)
     const [resEl, kpisEl] = await Promise.all([
-      fetch("/api/reportes/resumen-ejecutivo"),
-      fetch("/api/operaciones/kpis"),
+      fetch("/api/reportes/resumen-ejecutivo"), // Datos generales del negocio
+      fetch("/api/operaciones/kpis"),           // Datos de operaciones
     ]);
 
     if (!resEl.ok || !kpisEl.ok) throw new Error("Error API");
@@ -12,11 +16,11 @@ async function loadHeroCards() {
     const res  = await resEl.json();
     const kpis = await kpisEl.json();
 
-    const r = res.data;
-    const k = kpis.data;
-    const f = window.Tress;
+    const r = res.data;   // Datos del resumen ejecutivo
+    const k = kpis.data;  // Datos de operaciones
+    const f = window.Tress; // Funciones de formato de main.js
 
-    // Hero cards
+    // Rellena las 4 tarjetas flotantes del hero con los datos de la API
     document.getElementById("heroEmpleados").querySelector(".hc-value").textContent =
       f.formatNum(r.empleados_totales);
     document.getElementById("heroIngresos").querySelector(".hc-value").textContent =
@@ -26,18 +30,21 @@ async function loadHeroCards() {
     document.getElementById("heroUptime").querySelector(".hc-value").textContent =
       f.formatPct(k.uptime_plataforma);
 
-    // KPI strip
-    document.getElementById("masaSalarial").textContent  = f.formatMXN(r.ingresos_ytd / 5);
-    document.getElementById("crecimiento").textContent   = `+${f.formatPct(r.crecimiento_yoy)}`;
-    document.getElementById("npsScore").textContent      = k.nps_score;
+    // Rellena el strip de KPIs debajo del hero
+    document.getElementById("masaSalarial").textContent    = f.formatMXN(r.ingresos_ytd / 5);
+    document.getElementById("crecimiento").textContent     = `+${f.formatPct(r.crecimiento_yoy)}`;
+    document.getElementById("npsScore").textContent        = k.nps_score;
     document.getElementById("ticketsAbiertos").textContent = k.soporte_tickets_abiertos;
 
   } catch (err) {
     console.error("loadHeroCards:", err);
+    // Si hay error, muestra "Error" en lugar de datos
     document.getElementById("heroEmpleados").querySelector(".hc-value").textContent = "Error";
   }
 }
 
+
+// Carga y pinta la cuadrícula de productos ERP
 async function loadProducts() {
   const grid = document.getElementById("productsGrid");
   try {
@@ -46,6 +53,7 @@ async function loadProducts() {
     const json = await res.json();
     const f    = window.Tress;
 
+    // Por cada producto, genera una tarjeta HTML y la inserta en el grid
     grid.innerHTML = json.data.map((p) => `
       <div class="product-card">
         <div class="pc-cat">${p.categoria}</div>
@@ -65,7 +73,7 @@ async function loadProducts() {
           </div>
         </div>
       </div>
-    `).join("");
+    `).join(""); // .join("") une todos los strings sin separador
 
   } catch (err) {
     console.error("loadProducts:", err);
@@ -73,6 +81,7 @@ async function loadProducts() {
   }
 }
 
-// Init
+
+// ── Inicio: ejecuta ambas funciones al cargar la página ─────────────────────
 loadHeroCards();
 loadProducts();

@@ -1,40 +1,57 @@
 {% extends "base.html" %}
+{# Hereda sidebar, topbar y estructura de base.html #}
 
 {% block title %}Reportes — {{ app_name }}{% endblock %}
 {% block page_title %}Reportes Ejecutivos{% endblock %}
 
 {% block content %}
-<!-- Resumen Ejecutivo -->
+
+<!-- ── Resumen Ejecutivo ──────────────────────────────────────────────────── -->
+<!-- 4 tarjetas con métricas de alto nivel y barra de avance de meta anual -->
 <section class="section-block">
   <h3 class="section-title">Resumen Ejecutivo</h3>
+
+  <!-- Grid de tarjetas ejecutivas, generado dinámicamente por reportes.js -->
   <div class="exec-grid" id="execGrid">
     <div class="loading-msg">Cargando resumen…</div>
   </div>
 
-  <!-- Meta Anual -->
+  <!-- ── Barra de Meta Anual ──────────────────────────────────────────────── -->
+  <!-- Muestra cuánto del objetivo anual de ingresos se ha cumplido -->
   <div class="meta-section">
     <div class="meta-header">
       <span class="meta-title">Avance Meta Anual</span>
+      <!-- Porcentaje de cumplimiento (ej: "74.6%") -->
       <span class="meta-pct" id="metaPct">—</span>
     </div>
     <div class="meta-values">
+      <!-- Ingresos acumulados en el año hasta hoy -->
       <span id="metaActual">—</span>
+      <!-- Objetivo total del año -->
       <span id="metaAnual">—</span>
     </div>
+    <!-- Fondo gris de la barra -->
     <div class="meta-bar-bg">
-      <div class="meta-bar-fill" id="metaFill" style="width:0%"></div>
+      <!-- Barra de progreso: su ancho se anima con JS según el % de cumplimiento -->
+      <div class="meta-bar-fill" id="metaFill"></div>
     </div>
   </div>
 </section>
 
-<!-- Charts -->
+
+<!-- ── Gráficas ───────────────────────────────────────────────────────────── -->
 <div class="charts-grid">
+
+  <!-- Gráfica de pastel: distribución de satisfacción de clientes -->
+  <!-- 5 segmentos: Muy Satisfecho, Satisfecho, Neutral, Insatisfecho, Muy Insatisfecho -->
   <section class="section-block">
     <h3 class="section-title">Satisfacción de Clientes</h3>
     <div class="chart-container">
       <canvas id="chartSatisfaccion"></canvas>
     </div>
   </section>
+
+  <!-- Gráfica de barras agrupadas: tickets cerrados vs abiertos por módulo -->
   <section class="section-block">
     <h3 class="section-title">Tickets de Soporte por Módulo</h3>
     <div class="chart-container">
@@ -43,7 +60,9 @@
   </section>
 </div>
 
-<!-- Tabla de Tickets -->
+
+<!-- ── Tabla de Tickets ───────────────────────────────────────────────────── -->
+<!-- Detalle numérico de tickets por módulo con mini-barra de eficiencia -->
 <section class="section-block">
   <h3 class="section-title">Detalle Tickets por Módulo</h3>
   <div class="table-wrap">
@@ -54,18 +73,23 @@
           <th>Abiertos</th>
           <th>Cerrados</th>
           <th>Tiempo Promedio (hrs)</th>
+          <!-- Eficiencia = cerrados / (cerrados + abiertos) × 100 -->
           <th>Eficiencia</th>
         </tr>
       </thead>
+      <!-- Las filas las genera reportes.js (loadChartTickets) -->
       <tbody id="tbodyTickets">
         <tr><td colspan="5" class="loading-msg">Cargando tickets…</td></tr>
       </tbody>
     </table>
   </div>
 </section>
+
 {% endblock %}
 
 {% block extra_js %}
+<!-- Chart.js: librería para las gráficas de pastel y barras -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<!-- reportes.js: toda la lógica dinámica de esta página -->
 <script src="{{ url_for('static', filename='js/reportes.js') }}"></script>
 {% endblock %}

@@ -1,11 +1,16 @@
 {% extends "base.html" %}
+{# Hereda sidebar, topbar y estructura de base.html #}
 
 {% block title %}Nómina & RRHH — {{ app_name }}{% endblock %}
 {% block page_title %}Nómina & RRHH{% endblock %}
 
 {% block content %}
-<!-- KPI Strip -->
+
+<!-- ── KPI Strip ─────────────────────────────────────────────────────────── -->
+<!-- Cuatro tarjetas con métricas de nómina, llenadas por nomina.js -->
 <div class="kpi-strip">
+
+  <!-- Total de empleados registrados -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-blue">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
@@ -15,6 +20,8 @@
       <div class="kpi-value" id="kTotalEmp">—</div>
     </div>
   </div>
+
+  <!-- Suma de salarios de todos los empleados activos en el mes -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-green">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -24,6 +31,8 @@
       <div class="kpi-value" id="kMasa">—</div>
     </div>
   </div>
+
+  <!-- Nuevas contrataciones en el mes actual -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-purple">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
@@ -33,6 +42,8 @@
       <div class="kpi-value" id="kNuevos">—</div>
     </div>
   </div>
+
+  <!-- Porcentaje de empleados que dejaron la empresa este mes -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-orange">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
@@ -44,12 +55,16 @@
   </div>
 </div>
 
-<!-- Filtros + Tabla -->
+
+<!-- ── Tabla de empleados con filtros ────────────────────────────────────── -->
 <section class="section-block">
   <div class="section-header">
     <h3 class="section-title">Directorio de Empleados</h3>
+
+    <!-- Barra de filtros: el JS los lee cuando se hace clic en "Filtrar" -->
     <div class="filter-bar">
-      <select id="filterDepto" class="filter-select">
+      <!-- Filtro por departamento -->
+      <select id="filterDepto" class="filter-select" title="Filtrar por departamento">
         <option value="">Todos los departamentos</option>
         <option value="Nómina">Nómina</option>
         <option value="RRHH">RRHH</option>
@@ -58,14 +73,20 @@
         <option value="Finanzas">Finanzas</option>
         <option value="Soporte">Soporte</option>
       </select>
-      <select id="filterActivo" class="filter-select">
+
+      <!-- Filtro por estatus -->
+      <select id="filterActivo" class="filter-select" title="Filtrar por estatus">
         <option value="">Todos</option>
         <option value="true">Activos</option>
         <option value="false">Inactivos</option>
       </select>
-      <button class="btn-primary btn-sm" id="btnFiltrar">Filtrar</button>
+
+      <!-- Al hacer clic, nomina.js vuelve a pedir los datos con los filtros aplicados -->
+      <button type="button" class="btn-primary btn-sm" id="btnFiltrar">Filtrar</button>
     </div>
   </div>
+
+  <!-- Tabla: las filas <tr> las genera nomina.js dinámicamente -->
   <div class="table-wrap">
     <table class="data-table">
       <thead>
@@ -79,6 +100,7 @@
           <th>Estatus</th>
         </tr>
       </thead>
+      <!-- tbody vacío: nomina.js lo rellena al cargar la página -->
       <tbody id="tbodyEmpleados">
         <tr><td colspan="7" class="loading-msg">Cargando empleados…</td></tr>
       </tbody>
@@ -86,14 +108,21 @@
   </div>
 </section>
 
-<!-- Charts -->
+
+<!-- ── Gráficas ───────────────────────────────────────────────────────────── -->
+<!-- Dos gráficas en columnas: dona de departamentos y línea de masa salarial -->
 <div class="charts-grid">
+
+  <!-- Gráfica de dona: cuántos empleados activos hay en cada departamento -->
   <section class="section-block">
     <h3 class="section-title">Distribución por Departamento</h3>
     <div class="chart-container">
+      <!-- Chart.js pinta la gráfica dentro de este canvas -->
       <canvas id="chartDepto"></canvas>
     </div>
   </section>
+
+  <!-- Gráfica de línea: evolución de la masa salarial en los últimos 12 meses -->
   <section class="section-block">
     <h3 class="section-title">Histórico Masa Salarial</h3>
     <div class="chart-container">
@@ -101,9 +130,12 @@
     </div>
   </section>
 </div>
+
 {% endblock %}
 
 {% block extra_js %}
+<!-- Chart.js: librería externa para dibujar gráficas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<!-- nomina.js: lógica específica de esta página -->
 <script src="{{ url_for('static', filename='js/nomina.js') }}"></script>
 {% endblock %}

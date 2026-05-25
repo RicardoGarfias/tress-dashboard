@@ -1,11 +1,16 @@
 {% extends "base.html" %}
+{# Esta página hereda la estructura completa de base.html (sidebar, topbar, etc.) #}
 
 {% block title %}Inicio — {{ app_name }}{% endblock %}
 {% block page_title %}Inicio{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
+
+<!-- ── Hero Section ──────────────────────────────────────────────────────── -->
+<!-- Sección de bienvenida con texto descriptivo y 4 tarjetas con métricas clave -->
 <section class="hero-section section-block">
+
+  <!-- Columna izquierda: texto y botones de acción -->
   <div class="hero-info">
     <span class="hero-badge">Sistema ERP Empresarial</span>
     <h2 class="hero-title">Grupo Tress<br><span class="accent-text">International</span></h2>
@@ -13,15 +18,19 @@
       Soluciones integrales de ERP, nómina y recursos humanos para empresas mexicanas.
       Más de 25 años transformando la gestión empresarial con tecnología de vanguardia.
     </p>
+    <!-- Botones que llevan a otras secciones del dashboard -->
     <div class="hero-actions">
       <a href="{{ url_for('operaciones') }}" class="btn-primary">Ver Operaciones</a>
       <a href="{{ url_for('reportes') }}" class="btn-outline">Reportes Ejecutivos</a>
     </div>
   </div>
+
+  <!-- Columna derecha: 4 tarjetas flotantes con métricas (llenadas por index.js) -->
   <div class="hero-cards">
+    <!-- Las clases "floating" y "delay-X" aplican la animación de flotación con retraso -->
     <div class="hero-card floating" id="heroEmpleados">
       <div class="hc-label">Empleados Totales</div>
-      <div class="hc-value">—</div>
+      <div class="hc-value">—</div>  <!-- El "—" se reemplaza con el dato real vía JS -->
     </div>
     <div class="hero-card floating delay-1" id="heroIngresos">
       <div class="hc-label">Ingresos YTD</div>
@@ -38,10 +47,15 @@
   </div>
 </section>
 
-<!-- KPI Strip -->
+
+<!-- ── KPI Strip ─────────────────────────────────────────────────────────── -->
+<!-- Franja de 4 indicadores numéricos llenados por index.js -->
 <div class="kpi-strip">
+
+  <!-- KPI: Masa Salarial -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-blue">
+      <!-- Ícono SVG de signo de pesos -->
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
     </div>
     <div class="kpi-body">
@@ -49,6 +63,8 @@
       <div class="kpi-value" id="masaSalarial">—</div>
     </div>
   </div>
+
+  <!-- KPI: Crecimiento anual -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-green">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
@@ -58,6 +74,8 @@
       <div class="kpi-value" id="crecimiento">—</div>
     </div>
   </div>
+
+  <!-- KPI: Puntuación NPS de satisfacción de clientes -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-purple">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -67,6 +85,8 @@
       <div class="kpi-value" id="npsScore">—</div>
     </div>
   </div>
+
+  <!-- KPI: Tickets de soporte sin resolver -->
   <div class="kpi-card">
     <div class="kpi-icon kpi-orange">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.17 6.17l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -78,18 +98,23 @@
   </div>
 </div>
 
-<!-- Products Grid -->
+
+<!-- ── Portafolio de Productos ERP ───────────────────────────────────────── -->
+<!-- Las tarjetas de productos se generan dinámicamente con index.js -->
 <section class="section-block">
   <div class="section-header">
     <h3 class="section-title">Portafolio de Productos ERP</h3>
     <a href="{{ url_for('operaciones') }}" class="btn-outline btn-sm">Ver todos</a>
   </div>
+  <!-- Este div se rellena con HTML generado por index.js (loadProducts) -->
   <div class="products-grid" id="productsGrid">
     <div class="loading-msg">Cargando productos…</div>
   </div>
 </section>
 
-<!-- Quick Access -->
+
+<!-- ── Acceso Rápido ─────────────────────────────────────────────────────── -->
+<!-- Cuatro botones grandes que llevan directamente a las secciones principales -->
 <section class="section-block">
   <h3 class="section-title">Acceso Rápido</h3>
   <div class="quick-grid">
@@ -111,8 +136,10 @@
     </a>
   </div>
 </section>
+
 {% endblock %}
 
 {% block extra_js %}
+<!-- index.js se carga solo en esta página para llenar los datos dinámicos -->
 <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 {% endblock %}

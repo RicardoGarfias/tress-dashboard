@@ -3,25 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- El título cambia en cada página usando el bloque "title" -->
   <title>{% block title %}{{ app_name }}{% endblock %}</title>
+
+  <!-- Fuentes de Google: Syne (títulos) y DM Sans (texto general) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Hoja de estilos principal del dashboard -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
 
-  <!-- Sidebar -->
+  <!-- ── Sidebar (menú lateral fijo) ─────────────────────────────────────── -->
   <aside class="sidebar" id="sidebar">
+
+    <!-- Logo de la empresa en la parte superior del sidebar -->
     <div class="sidebar-logo">
-      <div class="logo-mark">T</div>
+      <div class="logo-mark">T</div>  <!-- Cuadro con la "T" de Tress -->
       <div class="logo-text">
         <span class="logo-name">TRESS</span>
         <span class="logo-sub">International</span>
       </div>
     </div>
 
+    <!-- Elementos de navegación: cada uno enlaza a una página -->
     <nav class="sidebar-nav">
+
+      <!-- La clase "active" se agrega dinámicamente desde Flask según la página actual -->
       <a href="{{ url_for('index') }}" class="nav-item {% if active == 'inicio' %}active{% endif %}">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -29,6 +40,7 @@
         </svg>
         <span>Inicio</span>
       </a>
+
       <a href="{{ url_for('nomina') }}" class="nav-item {% if active == 'nomina' %}active{% endif %}">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -38,6 +50,7 @@
         </svg>
         <span>Nómina & RRHH</span>
       </a>
+
       <a href="{{ url_for('operaciones') }}" class="nav-item {% if active == 'operaciones' %}active{% endif %}">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="2" y="3" width="20" height="14" rx="2"/>
@@ -46,6 +59,7 @@
         </svg>
         <span>Operaciones</span>
       </a>
+
       <a href="{{ url_for('reportes') }}" class="nav-item {% if active == 'reportes' %}active{% endif %}">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="20" x2="18" y2="10"/>
@@ -56,31 +70,38 @@
       </a>
     </nav>
 
+    <!-- Pie del sidebar: muestra el usuario y la versión del sistema -->
     <div class="sidebar-footer">
-      <div class="user-avatar">AD</div>
+      <div class="user-avatar">AD</div>  <!-- Iniciales del usuario -->
       <div class="user-info">
         <span class="user-name">Admin Tress</span>
+        <!-- version y current_year vienen del context_processor en app.py -->
         <span class="user-role">v{{ version }} &copy; {{ current_year }}</span>
       </div>
     </div>
   </aside>
 
-  <!-- Main wrapper -->
+  <!-- ── Área principal (todo lo que no es el sidebar) ──────────────────── -->
   <div class="main-wrap">
-    <!-- Topbar -->
+
+    <!-- Barra superior fija con título, fecha y estado de la API -->
     <header class="topbar">
       <div class="topbar-left">
-        <button class="hamburger" id="sidebarToggle" aria-label="Menu">
+        <!-- Botón hamburguesa: solo visible en móvil, abre/cierra el sidebar -->
+        <button type="button" class="hamburger" id="sidebarToggle" aria-label="Menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="3" y1="6"  x2="21" y2="6"/>
             <line x1="3" y1="12" x2="21" y2="12"/>
             <line x1="3" y1="18" x2="21" y2="18"/>
           </svg>
         </button>
+        <!-- El título cambia en cada página usando el bloque "page_title" -->
         <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
       </div>
       <div class="topbar-right">
+        <!-- La fecha se rellena con JavaScript en main.js -->
         <span class="current-date" id="currentDate"></span>
+        <!-- Indicador de estado: main.js lo pone "online" u "offline" según /api/health -->
         <div class="api-status" id="apiStatus">
           <div class="status-dot"></div>
           <span class="status-label">API</span>
@@ -88,13 +109,16 @@
       </div>
     </header>
 
-    <!-- Page content -->
+    <!-- Contenido de cada página se inyecta aquí mediante el bloque "content" -->
     <main class="page-content">
       {% block content %}{% endblock %}
     </main>
   </div>
 
+  <!-- JavaScript global cargado en todas las páginas -->
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+  <!-- Bloque extra_js: cada página agrega sus propios scripts aquí -->
   {% block extra_js %}{% endblock %}
 </body>
 </html>

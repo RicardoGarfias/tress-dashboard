@@ -1,9 +1,17 @@
+# api/routes.py — Todas las rutas de la API (endpoints)
+# Cada función devuelve datos en formato JSON que el JavaScript del frontend consume
+
 from flask import Blueprint, jsonify, request
 
+# Blueprint: agrupa todas las rutas de la API en un módulo separado
+# Se registra en app.py bajo el prefijo /api
 api_bp = Blueprint("api", __name__)
 
-# ── Datos ficticios ──────────────────────────────────────────────────────────
 
+# ── Datos de ejemplo (simulan una base de datos) ─────────────────────────────
+# En una app real, estos datos vendrían de una base de datos como MySQL o PostgreSQL
+
+# Lista de empleados con su información básica
 EMPLEADOS = [
     {"id": 1,  "nombre": "Alejandro Ríos",      "puesto": "Gerente de Nómina",       "depto": "Nómina",       "salario": 52000, "activo": True,  "ingreso": "2019-03-15"},
     {"id": 2,  "nombre": "Mariana Castillo",     "puesto": "Analista RRHH",           "depto": "RRHH",         "salario": 34000, "activo": True,  "ingreso": "2020-07-01"},
@@ -19,6 +27,7 @@ EMPLEADOS = [
     {"id": 12, "nombre": "Gabriela Montoya",     "puesto": "Coordinadora de RRHH",    "depto": "RRHH",         "salario": 38000, "activo": True,  "ingreso": "2019-12-03"},
 ]
 
+# Productos ERP que vende Tress (licencias, renovaciones e ingresos por producto)
 PRODUCTOS = [
     {"id": "TRS-NOM", "nombre": "Tress Nómina",         "categoria": "Nómina",       "licencias": 480, "renovaciones": 432, "ingresos": 9600000},
     {"id": "TRS-ERP", "nombre": "Tress ERP Core",       "categoria": "ERP",          "licencias": 210, "renovaciones": 195, "ingresos": 18900000},
@@ -28,6 +37,7 @@ PRODUCTOS = [
     {"id": "TRS-BIA", "nombre": "Tress BI & Analytics", "categoria": "Inteligencia", "licencias": 74,  "renovaciones": 60,  "ingresos": 3700000},
 ]
 
+# Ingresos por mes y por producto (en miles de pesos) para la gráfica de barras
 INGRESOS_MENSUALES = {
     "meses": ["Ene", "Feb", "Mar", "Abr", "May", "Jun"],
     "data": [
@@ -40,6 +50,7 @@ INGRESOS_MENSUALES = {
     ],
 }
 
+# Niveles de satisfacción de los clientes (para la gráfica de pastel)
 SATISFACCION = [
     {"categoria": "Muy Satisfecho",      "porcentaje": 42},
     {"categoria": "Satisfecho",          "porcentaje": 31},
@@ -48,6 +59,7 @@ SATISFACCION = [
     {"categoria": "Muy Insatisfecho",    "porcentaje": 4},
 ]
 
+# Tickets de soporte abiertos y cerrados por módulo del sistema
 TICKETS = [
     {"modulo": "Nómina",       "abiertos": 12, "cerrados": 88,  "promedio_horas": 3.2},
     {"modulo": "ERP Core",     "abiertos": 8,  "cerrados": 114, "promedio_horas": 5.7},
@@ -56,49 +68,66 @@ TICKETS = [
     {"modulo": "CRM",          "abiertos": 19, "cerrados": 61,  "promedio_horas": 6.3},
 ]
 
-# ── Endpoints ────────────────────────────────────────────────────────────────
 
+# ── Endpoints de la API ───────────────────────────────────────────────────────
+
+# GET /api/health — Verifica que la API esté funcionando (usado por el semáforo del topbar)
 @api_bp.route("/health")
 def health():
     return jsonify({"status": "ok", "data": {"service": "Tress Dashboard API", "version": "2.4.1"}})
 
 
-# — Nómina —
+# ── Nómina ───────────────────────────────────────────────────────────────────
 
+# GET /api/nomina/resumen — Devuelve los KPIs principales del módulo de nómina
 @api_bp.route("/nomina/resumen")
 def nomina_resumen():
     activos = sum(1 for e in EMPLEADOS if e["activo"])
     return jsonify({"status": "ok", "data": {
-        "total_empleados": len(EMPLEADOS),
-        "masa_salarial_mensual": sum(e["salario"] for e in EMPLEADOS if e["activo"]),
-        "nuevos_ingresos_mes": 2,
-        "bajas_mes": 1,
-        "rotacion_porcentaje": round((1 / activos) * 100, 2),
+        "total_empleados":        len(EMPLEADOS),
+        "masa_salarial_mensual":  sum(e["salario"] for e in EMPLEADOS if e["activo"]),
+        "nuevos_ingresos_mes":    2,
+        "bajas_mes":              1,
+        # Rotación = bajas del mes / total activos * 100
+        "rotacion_porcentaje":    round((1 / activos) * 100, 2),
     }})
 
 
+# GET /api/nomina/empleados — Devuelve la lista de empleados con filtros opcionales
+# Parámetros de URL: ?depto=TI&activo=true
 @api_bp.route("/nomina/empleados")
 def nomina_empleados():
+    # Leemos los filtros que manda el frontend desde la URL
     depto  = request.args.get("depto", "").strip()
     activo = request.args.get("activo", "").strip().lower()
     result = EMPLEADOS[:]
+
+    # Filtramos por departamento si se especificó
     if depto:
         result = [e for e in result if e["depto"].lower() == depto.lower()]
+
+    # Filtramos por estatus activo/inactivo si se especificó
     if activo in ("true", "false"):
         flag = activo == "true"
         result = [e for e in result if e["activo"] == flag]
+
     return jsonify({"status": "ok", "data": result})
 
 
+# GET /api/nomina/distribucion-deptos — Cuenta cuántos empleados activos hay por departamento
+# Usado por la gráfica de donut
 @api_bp.route("/nomina/distribucion-deptos")
 def nomina_dist_deptos():
     dist = {}
     for e in EMPLEADOS:
         if e["activo"]:
+            # Si el departamento no existe en el diccionario, lo inicializa en 0
             dist[e["depto"]] = dist.get(e["depto"], 0) + 1
     return jsonify({"status": "ok", "data": dist})
 
 
+# GET /api/nomina/historico-masa-salarial — Histórico mensual de la masa salarial
+# Usado por la gráfica de línea
 @api_bp.route("/nomina/historico-masa-salarial")
 def nomina_historico():
     meses  = ["Jun-24","Jul-24","Ago-24","Sep-24","Oct-24","Nov-24",
@@ -108,54 +137,62 @@ def nomina_historico():
     return jsonify({"status": "ok", "data": {"meses": meses, "valores": valores}})
 
 
-# — Operaciones —
+# ── Operaciones ───────────────────────────────────────────────────────────────
 
+# GET /api/operaciones/productos — Devuelve todos los productos ERP con sus métricas
 @api_bp.route("/operaciones/productos")
 def operaciones_productos():
     return jsonify({"status": "ok", "data": PRODUCTOS})
 
 
+# GET /api/operaciones/kpis — Calcula y devuelve los KPIs globales de operaciones
 @api_bp.route("/operaciones/kpis")
 def operaciones_kpis():
-    total_lic = sum(p["licencias"] for p in PRODUCTOS)
+    total_lic = sum(p["licencias"]    for p in PRODUCTOS)
     total_ren = sum(p["renovaciones"] for p in PRODUCTOS)
     return jsonify({"status": "ok", "data": {
-        "total_licencias_activas": total_lic,
-        "ingresos_anuales":        sum(p["ingresos"] for p in PRODUCTOS),
-        "tasa_renovacion":         round((total_ren / total_lic) * 100, 1),
-        "clientes_activos":        340,
+        "total_licencias_activas":  total_lic,
+        "ingresos_anuales":         sum(p["ingresos"] for p in PRODUCTOS),
+        # Tasa de renovación = clientes que renuevan / total de licencias
+        "tasa_renovacion":          round((total_ren / total_lic) * 100, 1),
+        "clientes_activos":         340,
         "soporte_tickets_abiertos": sum(t["abiertos"] for t in TICKETS),
-        "uptime_plataforma":       99.7,
-        "nps_score":               72,
+        "uptime_plataforma":        99.7,
+        "nps_score":                72,
     }})
 
 
+# GET /api/operaciones/ingresos-mensuales — Ingresos por mes separados por producto
+# Usado por la gráfica de barras apiladas
 @api_bp.route("/operaciones/ingresos-mensuales")
 def operaciones_ingresos():
     return jsonify({"status": "ok", "data": INGRESOS_MENSUALES})
 
 
-# — Reportes —
+# ── Reportes ──────────────────────────────────────────────────────────────────
 
+# GET /api/reportes/satisfaccion-clientes — Porcentajes de satisfacción para la gráfica de pastel
 @api_bp.route("/reportes/satisfaccion-clientes")
 def reportes_satisfaccion():
     return jsonify({"status": "ok", "data": SATISFACCION})
 
 
+# GET /api/reportes/tickets-soporte — Tickets por módulo para la tabla y la gráfica de barras
 @api_bp.route("/reportes/tickets-soporte")
 def reportes_tickets():
     return jsonify({"status": "ok", "data": TICKETS})
 
 
+# GET /api/reportes/resumen-ejecutivo — Métricas globales del negocio (para el resumen ejecutivo)
 @api_bp.route("/reportes/resumen-ejecutivo")
 def reportes_resumen():
     return jsonify({"status": "ok", "data": {
-        "ingresos_ytd":       35820000,
-        "meta_anual":         48000000,
-        "cumplimiento_meta":  74.6,
+        "ingresos_ytd":        35820000,   # Ingresos acumulados en el año
+        "meta_anual":          48000000,   # Meta de ingresos para el año
+        "cumplimiento_meta":   74.6,       # Porcentaje de avance hacia la meta
         "clientes_nuevos_ytd": 28,
-        "churn_rate":         3.2,
-        "crecimiento_yoy":    18.5,
-        "ebitda_margen":      31.4,
-        "empleados_totales":  len(EMPLEADOS),
+        "churn_rate":          3.2,        # Porcentaje de clientes que se van
+        "crecimiento_yoy":     18.5,       # Crecimiento respecto al año anterior
+        "ebitda_margen":       31.4,       # Margen de rentabilidad operativa
+        "empleados_totales":   len(EMPLEADOS),
     }})
