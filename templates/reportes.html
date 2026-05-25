@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Reportes — {{ app_name }}{% endblock %}
+{% block page_title %}Reportes Ejecutivos{% endblock %}
+
+{% block content %}
+<!-- Resumen Ejecutivo -->
+<section class="section-block">
+  <h3 class="section-title">Resumen Ejecutivo</h3>
+  <div class="exec-grid" id="execGrid">
+    <div class="loading-msg">Cargando resumen…</div>
+  </div>
+
+  <!-- Meta Anual -->
+  <div class="meta-section">
+    <div class="meta-header">
+      <span class="meta-title">Avance Meta Anual</span>
+      <span class="meta-pct" id="metaPct">—</span>
+    </div>
+    <div class="meta-values">
+      <span id="metaActual">—</span>
+      <span id="metaAnual">—</span>
+    </div>
+    <div class="meta-bar-bg">
+      <div class="meta-bar-fill" id="metaFill" style="width:0%"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Charts -->
+<div class="charts-grid">
+  <section class="section-block">
+    <h3 class="section-title">Satisfacción de Clientes</h3>
+    <div class="chart-container">
+      <canvas id="chartSatisfaccion"></canvas>
+    </div>
+  </section>
+  <section class="section-block">
+    <h3 class="section-title">Tickets de Soporte por Módulo</h3>
+    <div class="chart-container">
+      <canvas id="chartTickets"></canvas>
+    </div>
+  </section>
+</div>
+
+<!-- Tabla de Tickets -->
+<section class="section-block">
+  <h3 class="section-title">Detalle Tickets por Módulo</h3>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Módulo</th>
+          <th>Abiertos</th>
+          <th>Cerrados</th>
+          <th>Tiempo Promedio (hrs)</th>
+          <th>Eficiencia</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyTickets">
+        <tr><td colspan="5" class="loading-msg">Cargando tickets…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/reportes.js') }}"></script>
+{% endblock %}

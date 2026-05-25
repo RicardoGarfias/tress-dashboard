@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Operaciones — {{ app_name }}{% endblock %}
+{% block page_title %}Operaciones & ERP{% endblock %}
+
+{% block content %}
+<!-- KPI Strip -->
+<div class="kpi-strip">
+  <div class="kpi-card">
+    <div class="kpi-icon kpi-blue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-label">Licencias Activas</div>
+      <div class="kpi-value" id="kLicencias">—</div>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon kpi-green">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-label">Ingresos Anuales</div>
+      <div class="kpi-value" id="kIngresos">—</div>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon kpi-purple">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-label">Tasa Renovación</div>
+      <div class="kpi-value" id="kRenovacion">—</div>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon kpi-orange">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-label">Clientes Activos</div>
+      <div class="kpi-value" id="kClientes">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- ERP Products Grid -->
+<section class="section-block">
+  <h3 class="section-title">Portafolio ERP</h3>
+  <div class="products-erp-grid" id="erpProductsGrid">
+    <div class="loading-msg">Cargando productos…</div>
+  </div>
+</section>
+
+<!-- Chart Ingresos + Indicators -->
+<div class="charts-grid">
+  <section class="section-block">
+    <h3 class="section-title">Ingresos Mensuales por Producto (MXN Miles)</h3>
+    <div class="chart-container">
+      <canvas id="chartIngresos"></canvas>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <h3 class="section-title">Indicadores de Plataforma</h3>
+    <div class="indicators-grid">
+      <div class="indicator-card">
+        <div class="ind-header">
+          <span class="ind-label">Uptime</span>
+          <span class="ind-value" id="indUptime">—</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill fill-green" id="uptimeBar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="indicator-card">
+        <div class="ind-header">
+          <span class="ind-label">NPS Score</span>
+          <span class="ind-value" id="indNPS">—</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill fill-blue" id="npsBar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="indicator-card">
+        <div class="ind-header">
+          <span class="ind-label">Tickets Abiertos</span>
+          <span class="ind-value" id="indTickets">—</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill fill-orange" id="ticketsBar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/operaciones.js') }}"></script>
+{% endblock %}

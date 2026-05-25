@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio — {{ app_name }}{% endblock %}
+{% block page_title %}Inicio{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section section-block">
+  <div class="hero-info">
+    <span class="hero-badge">Sistema ERP Empresarial</span>
+    <h2 class="hero-title">Grupo Tress<br><span class="accent-text">International</span></h2>
+    <p class="hero-desc">
+      Soluciones integrales de ERP, nómina y recursos humanos para empresas mexicanas.
+      Más de 25 años transformando la gestión empresarial con tecnología de vanguardia.
+    </p>
+    <div class="hero-actions">
+      <a href="{{ url_for('operaciones') }}" class="btn-primary">Ver Operaciones</a>
+      <a href="{{ url_for('reportes') }}" class="btn-outline">Reportes Ejecutivos</a>
+    </div>
+  </div>
+  <div class="hero-cards">
+    <div class="hero-card floating" id="heroEmpleados">
+      <div class="hc-label">Empleados Totales</div>
+      <div class="hc-value">—</div>
+    </div>
+    <div class="hero-card floating delay-1" id="heroIngresos">
+      <div class="hc-label">Ingresos YTD</div>
+      <div class="hc-value">—</div>
+    </div>
+    <div class="hero-card floating delay-2" id="heroClientes">
+      <div class="hc-label">Clientes Activos</div>
+      <div class="hc-value">—</div>
+    </div>
+    <div class="hero-card floating delay-3" id="heroUptime">
+      <div class="hc-label">Uptime Plataforma</div>
+      <div class="hc-value">—</div>
+    </div>
+  </div>
+</section>
+
+<!-- KPI Strip -->
+<div class="kpi-strip">
+  <div class="kpi-card">
+    <div class="kpi-icon kpi-blue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-label">Masa Salarial</div>
+      <div class="kpi-value" id="masaSalarial">—</div>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon kpi-green">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-label">Crecimiento YoY</div>
+      <div class="kpi-value" id="crecimiento">—</div>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon kpi-purple">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-label">NPS Score</div>
+      <div class="kpi-value" id="npsScore">—</div>
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon kpi-orange">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.17 6.17l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-label">Tickets Abiertos</div>
+      <div class="kpi-value" id="ticketsAbiertos">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- Products Grid -->
+<section class="section-block">
+  <div class="section-header">
+    <h3 class="section-title">Portafolio de Productos ERP</h3>
+    <a href="{{ url_for('operaciones') }}" class="btn-outline btn-sm">Ver todos</a>
+  </div>
+  <div class="products-grid" id="productsGrid">
+    <div class="loading-msg">Cargando productos…</div>
+  </div>
+</section>
+
+<!-- Quick Access -->
+<section class="section-block">
+  <h3 class="section-title">Acceso Rápido</h3>
+  <div class="quick-grid">
+    <a href="{{ url_for('nomina') }}" class="quick-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      <span>Nómina & RRHH</span>
+    </a>
+    <a href="{{ url_for('operaciones') }}" class="quick-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <span>Operaciones ERP</span>
+    </a>
+    <a href="{{ url_for('reportes') }}" class="quick-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span>Reportes</span>
+    </a>
+    <a href="#" class="quick-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      <span>Soporte</span>
+    </a>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+{% endblock %}
